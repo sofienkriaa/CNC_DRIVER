@@ -169,7 +169,7 @@ void RotateMotorZDir2WithSteps(int steps) {
 
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   pinMode(MotorXPin1, OUTPUT);
   pinMode(MotorXPin2, OUTPUT);
   pinMode(MotorYPin1, OUTPUT);
@@ -181,9 +181,23 @@ void setup() {
 }
 
 void loop() {
-  RotateMotorXDir2WithSteps(20);
-  RotateMotorYDir2WithSteps(1000);
-  RotateMotorXDir1WithSteps(20);
-  RotateMotorYDir1WithSteps(1000);
-
+  if (Serial.available() > 0) {
+    String incomingData = Serial.readString();
+    String commandType = incomingData.substring(0, 2);
+    int stepsNbr = incomingData.substring(2).toInt();
+    
+    if (commandType == "X1"){
+      RotateMotorXDir1WithSteps(stepsNbr);
+    } else if (commandType == "X2") {
+      RotateMotorXDir2WithSteps(stepsNbr);
+    } else if (commandType == "Y1") {
+      RotateMotorYDir1WithSteps(stepsNbr);
+    } else if (commandType == "Y2") {
+      RotateMotorYDir2WithSteps(stepsNbr);
+    } else if (commandType == "Z1") {
+      RotateMotorZDir1WithSteps(stepsNbr);
+    } else if (commandType == "Z2") {
+      RotateMotorZDir2WithSteps(stepsNbr);
+    }
+  }
 }
